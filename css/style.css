@@ -1,0 +1,21 @@
+.other_class {
+    font-size: medium;
+    color: yellowgreen;
+}
+
+.overlay_mod {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+.chart_block {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.chart_block canvas{
+    max-width: 46%;
+    margin-top: 20px;
+}

@@ -38,6 +38,7 @@ const MONSTER_METHODS = {
     userCommentsYears: '-usercommentsbyyears',
     userPostsMonths: '-userpostsbymonths',
     userCommentMonths: '-usercommentsbymonths',
+    userCommentHours: '-usercommentsbyhours',
 };
 
 document.querySelectorAll('.comment__body').forEach(
@@ -147,6 +148,15 @@ document.querySelectorAll('.comment__body').forEach(
                             chartBlock,
                             ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL,
                             CHART_TYPE.bar,
+                            MONTHS,
+                        );
+
+                        chartsMonsterCanvas(
+                            userId,
+                            MONSTER_METHODS.userCommentHours,
+                            chartBlock,
+                            ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL,
+                            CHART_TYPE.radar,
                             MONTHS,
                         );
 

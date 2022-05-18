@@ -106,13 +106,6 @@ document.querySelectorAll('.comment__body').forEach(
 
                     if (userIdPromise.ok) {
                         let nickBlock = document.createElement('div');
-                        //TODO надо перенести канвасы в метод, нахер их не надо отдельно передавать
-                        let activityYearsPostsCanvas = document.createElement('canvas');
-                        let activityYearsCommentsCanvas = document.createElement('canvas');
-                        let activityMonthsCommentsCanvas = document.createElement('canvas');
-                        let activityMonthsPostsCanvas = document.createElement('canvas');
-
-                        activityYearsPostsCanvas.className = 'activity_years_canvas';
 
                         nickBlock.innerHTML = '<a href="' + MONSTER_BASE_URL + 'user/' + nickName + '-summary" target="_blank">' + nickName + '</a>';
                         complainBody.append(nickBlock);
@@ -123,7 +116,6 @@ document.querySelectorAll('.comment__body').forEach(
 
                         chartsMonsterCanvas(
                             userId,
-                            activityMonthsPostsCanvas,
                             MONSTER_METHODS.userPostsYears,
                             chartBlock,
                             ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL,
@@ -133,7 +125,6 @@ document.querySelectorAll('.comment__body').forEach(
 
                         chartsMonsterCanvas(
                             userId,
-                            activityYearsCommentsCanvas,
                             MONSTER_METHODS.userCommentsYears,
                             chartBlock,
                             ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL,
@@ -143,7 +134,6 @@ document.querySelectorAll('.comment__body').forEach(
 
                         chartsMonsterCanvas(
                             userId,
-                            activityMonthsPostsCanvas,
                             MONSTER_METHODS.userPostsMonths,
                             chartBlock,
                             ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL,
@@ -153,7 +143,6 @@ document.querySelectorAll('.comment__body').forEach(
 
                         chartsMonsterCanvas(
                             userId,
-                            activityMonthsCommentsCanvas,
                             MONSTER_METHODS.userCommentMonths,
                             chartBlock,
                             ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL,
@@ -195,7 +184,6 @@ function popupContentFunction(nickName) {
 
 /**
  * @param userId Идентификатор пользователя
- * @param canvas Объект Canvas под диаграмму
  * @param method Метод монстра
  * @param complainBody
  * @param label
@@ -204,13 +192,14 @@ function popupContentFunction(nickName) {
  */
 function chartsMonsterCanvas(
     userId,
-    canvas,
     method,
     complainBody,
     label,
     chartType,
     axisValues,
 ) {
+    let canvas = document.createElement('canvas');
+
     $.ajax({
             type: 'GET',
             url: MONSTER_BASE_URL + 'api/' + userId + method,

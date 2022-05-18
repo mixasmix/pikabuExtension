@@ -16,6 +16,7 @@ const POPUP_CONTAINER_CLASS = 'popup__container';
 const POPUP_CONTENT_CLASS = 'popup__content';
 const CHART_BLOCK_CLASS = 'chart_block';
 const MONSTER_BASE_URL = 'https://pikabu.monster/';
+const CANVAS_DIV_CLASS = 'canvas_container';
 const ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL = 'Создание постов по годам';
 const ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL = 'Комментарии по годам';
 const ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL = 'Создание постов по месяцам';
@@ -70,8 +71,6 @@ document.querySelectorAll('.comment__body').forEach(
                     popupContainer.className = POPUP_CONTAINER_CLASS;
                     popupContent.className = POPUP_CONTENT_CLASS;
 
-                    popupContent.style = 'max-height: 100%;';
-
                     overlay.setAttribute('z-index', "10000");
                     overlay.append(modal);
                     modal.append(popupWrapper);
@@ -115,50 +114,18 @@ document.querySelectorAll('.comment__body').forEach(
                             return data.ID;
                         });
 
-                        chartsMonsterCanvas(
-                            userId,
-                            MONSTER_METHODS.userPostsYears,
-                            chartBlock,
-                            ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL,
-                            CHART_TYPE.bar,
-                            years,
-                        );
-
-                        chartsMonsterCanvas(
-                            userId,
-                            MONSTER_METHODS.userCommentsYears,
-                            chartBlock,
-                            ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL,
-                            CHART_TYPE.bar,
-                            years,
-                        );
-
-                        chartsMonsterCanvas(
-                            userId,
-                            MONSTER_METHODS.userPostsMonths,
-                            chartBlock,
-                            ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL,
-                            CHART_TYPE.bar,
-                            MONTHS,
-                        );
-
-                        chartsMonsterCanvas(
-                            userId,
-                            MONSTER_METHODS.userCommentMonths,
-                            chartBlock,
-                            ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL,
-                            CHART_TYPE.bar,
-                            MONTHS,
-                        );
-
-                        chartsMonsterCanvas(
-                            userId,
-                            MONSTER_METHODS.userCommentHours,
-                            chartBlock,
-                            ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL,
-                            CHART_TYPE.radar,
-                            MONTHS,
-                        );
+                        [
+                            chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsYears, ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years),
+                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentsYears, ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years),
+                            chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsMonths, ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS),
+                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentMonths, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS),
+                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentHours, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.radar, HOURS)
+                        ].forEach(elem => {
+                            let canvasDiv = document.createElement('div');
+                            canvasDiv.className = CANVAS_DIV_CLASS;
+                            canvasDiv.append(elem);
+                            chartBlock.append(canvasDiv);
+                        });
 
                         complainBody.append(chartBlock);
                     } else {
@@ -195,7 +162,6 @@ function popupContentFunction(nickName) {
 /**
  * @param userId Идентификатор пользователя
  * @param method Метод монстра
- * @param complainBody
  * @param label
  * @param chartType
  * @param axisValues
@@ -203,12 +169,13 @@ function popupContentFunction(nickName) {
 function chartsMonsterCanvas(
     userId,
     method,
-    complainBody,
     label,
     chartType,
     axisValues,
 ) {
     let canvas = document.createElement('canvas');
+
+    canvas.style.height = '130px';
 
     $.ajax({
             type: 'GET',
@@ -221,8 +188,6 @@ function chartsMonsterCanvas(
                 });
 
                 if (Object.keys(result.data).length) {
-                    complainBody.append(canvas);
-
                     new Chart(canvas,
                         {
                             type: chartType,
@@ -233,11 +198,13 @@ function chartsMonsterCanvas(
                                     data: valuesData,
                                     backgroundColor: ['yellowgreen']
                                 }]
-                            }
+                            },
                         }
                     );
                 }
             }
         }
     );
+
+    return canvas;
 }

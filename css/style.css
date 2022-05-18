@@ -9,13 +9,21 @@
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 100000;
 }
+
+.popup__content {
+    max-height: 800px;
+}
+
 .chart_block {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    overflow: scroll;
 }
-.chart_block canvas{
+.chart_block .canvas_container{
+    height: 150px;
     max-width: 46%;
     margin-top: 20px;
 }

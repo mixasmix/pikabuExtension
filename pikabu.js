@@ -122,18 +122,11 @@ document.querySelectorAll('.comment__body').forEach(
 
                         complainBody.append(popularTagsBlock);
 
-                        [
-                            chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsYears, ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years),
-                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentsYears, ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years),
-                            chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsMonths, ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS),
-                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentMonths, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS),
-                            chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentHours, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.radar, HOURS)
-                        ].forEach(elem => {
-                            let canvasDiv = document.createElement('div');
-                            canvasDiv.className = CANVAS_DIV_CLASS;
-                            canvasDiv.append(elem);
-                            chartBlock.append(canvasDiv);
-                        });
+                        chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsYears, ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years, chartBlock);
+                        chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentsYears, ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years, chartBlock);
+                        chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsMonths, ACTIVITY_POSTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS, chartBlock);
+                        chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentMonths, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.bar, MONTHS, chartBlock);
+                        chartsMonsterCanvas(userId, MONSTER_METHODS.userCommentHours, ACTIVITY_COMMENTS_MONTHS_DIAGRAM_LABEL, CHART_TYPE.radar, HOURS, chartBlock);
 
                         complainBody.append(chartBlock);
                     } else {
@@ -173,6 +166,7 @@ function popupContentFunction(nickName) {
  * @param label
  * @param chartType
  * @param axisValues
+ * @param chartBlock
  */
 function chartsMonsterCanvas(
     userId,
@@ -180,6 +174,7 @@ function chartsMonsterCanvas(
     label,
     chartType,
     axisValues,
+    chartBlock,
 ) {
     let canvas = document.createElement('canvas');
 
@@ -196,6 +191,12 @@ function chartsMonsterCanvas(
                 });
 
                 if (Object.keys(result.data).length) {
+                    let canvasDiv = document.createElement('div');
+
+                    canvasDiv.className = CANVAS_DIV_CLASS;
+                    canvasDiv.append(canvas);
+                    chartBlock.append(canvasDiv)
+
                     new Chart(canvas,
                         {
                             type: chartType,
@@ -213,8 +214,6 @@ function chartsMonsterCanvas(
             }
         }
     );
-
-    return canvas;
 }
 
 /**

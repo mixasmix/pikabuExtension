@@ -22,8 +22,17 @@
     flex-wrap: wrap;
     overflow: scroll;
 }
-.chart_block .canvas_container{
+.chart_block .canvas_container {
     height: 150px;
     max-width: 46%;
     margin-top: 20px;
+}
+
+.monster_menu_horizontal {
+    line-height: 18px;
+    margin-bottom: 5px;
+}
+
+.monster_menu_horizontal a:hover {
+    cursor: pointer;
 }

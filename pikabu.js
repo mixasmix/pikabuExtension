@@ -16,6 +16,7 @@ const POPUP_CONTAINER_CLASS = 'popup__container';
 const POPUP_CONTENT_CLASS = 'popup__content';
 const CHART_BLOCK_CLASS = 'chart_block';
 const MONSTER_BASE_URL = 'https://pikabu.monster/';
+const PIKABU_BASE_URL = 'https://pikabu.ru/';
 const CANVAS_DIV_CLASS = 'canvas_container';
 const ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL = 'Создание постов по годам';
 const ACTIVITY_COMMENTS_YEARS_DIAGRAM_LABEL = 'Комментарии по годам';
@@ -40,6 +41,7 @@ const MONSTER_METHODS = {
     userPostsMonths: '-userpostsbymonths',
     userCommentMonths: '-usercommentsbymonths',
     userCommentHours: '-usercommentsbyhours',
+    userCommentTag: '-CommentTags',
 };
 
 document.querySelectorAll('.comment__body').forEach(
@@ -106,6 +108,8 @@ document.querySelectorAll('.comment__body').forEach(
 
                     if (userIdPromise.ok) {
                         let nickBlock = document.createElement('div');
+                        let popularTagsBlock = document.createElement('div');
+                        popularTagsBlock.className = 'menu_horizontal monster_menu_horizontal'; //TODO вынести в константу
 
                         nickBlock.innerHTML = '<a href="' + MONSTER_BASE_URL + 'user/' + nickName + '-summary" target="_blank">' + nickName + '</a>';
                         complainBody.append(nickBlock);
@@ -113,6 +117,10 @@ document.querySelectorAll('.comment__body').forEach(
                         let userId = await userIdPromise.json().then((data) => {
                             return data.ID;
                         });
+
+                        commentTagsMonster(userId, popularTagsBlock);
+
+                        complainBody.append(popularTagsBlock);
 
                         [
                             chartsMonsterCanvas(userId, MONSTER_METHODS.userPostsYears, ACTIVITY_POSTS_YEARS_DIAGRAM_LABEL, CHART_TYPE.bar, years),
@@ -207,4 +215,33 @@ function chartsMonsterCanvas(
     );
 
     return canvas;
+}
+
+/**
+ * @param userId
+ * @param popularTagsBlock
+ */
+function commentTagsMonster(userId, popularTagsBlock)
+{
+    $.ajax({
+        type: 'GET',
+        url: MONSTER_BASE_URL + 'api/' + userId + MONSTER_METHODS.userCommentTag,
+        success: result => {
+            let links = '';
+
+            result.forEach(tagData => {
+                links +=
+                    '<a class="menu__item menu__item_current" target="_blank" href="' +
+                    PIKABU_BASE_URL +
+                    'tag/' +
+                    tagData.Tag +
+                    '/hot">' +
+                    tagData.Tag +
+                    '(' + tagData.Count + ')' +
+                    '</a>';
+            });
+
+            popularTagsBlock.innerHTML = links;
+        }
+    });
 }

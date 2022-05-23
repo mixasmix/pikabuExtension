@@ -33,8 +33,14 @@
       ]
     }
   ],
+  "background": {
+    "scripts": ["js/jQuery.js", "popup/popup.js"]
+  },
   "permissions": [
     "*://pikabu.monster/*",
-    "webRequest"
-  ]
+    "webRequest",
+    "storage",
+    "activeTab"
+  ],
+  "content_security_policy": "script-src 'self' https://cdn.jsdelivr.net/; object-src 'self';"
 }

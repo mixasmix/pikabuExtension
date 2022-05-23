@@ -193,7 +193,7 @@ function chartsMonsterCanvas(
     $.ajax({
             type: 'GET',
             url: MONSTER_BASE_URL + 'api/' + userId + method,
-            success: function (result) {
+            success: async function (result) {
                 let valuesData = [];
 
                 axisValues.forEach(e => {
@@ -203,10 +203,14 @@ function chartsMonsterCanvas(
                 if (Object.keys(result.data).length) {
                     let canvasDiv = document.createElement('div');
 
+                    let color = await browser.storage.local.get().then(data => {
+                        return data.diagramColor
+                    });
+
                     canvasDiv.className = CLASS.canvasDiv;
                     canvasDiv.append(canvas);
                     chartBlock.append(canvasDiv)
-
+                    console.log(color)
                     new Chart(canvas,
                         {
                             type: chartType,
@@ -215,7 +219,7 @@ function chartsMonsterCanvas(
                                 datasets: [{
                                     label: label,
                                     data: valuesData,
-                                    backgroundColor: ['yellowgreen']
+                                    backgroundColor: [(!color) ? 'yellowgreen' : color]
                                 }]
                             },
                         }
